@@ -3,6 +3,7 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
+            [ring.util.response :as ring-resp]
             [bpmock-facephi.response :as res]
             [cheshire.core :as json]))
 
