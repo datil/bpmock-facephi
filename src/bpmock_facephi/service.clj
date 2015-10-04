@@ -78,9 +78,9 @@
     "scarface" (res/bad-request
                 {:message "Los datos biométricos no son válidos."
                  :code "bad_request"})
-    (res/forbidden
+    (res/unauthorized
      {:message "El OTP no es válido."
-      :code "forbidden"})))
+      :code "unauthorized"})))
 
 (defn authenticate-user
   [{:keys [json-resp] :as request}]
@@ -116,6 +116,15 @@
      {:message "El usuario o contraseña no es válido."
       :code "unauthorized"})))
 
+(defn send-otp
+  [{:keys [path-params] :as request}]
+  (case (:username path-params)
+    "rosaaviles1604" (res/ok
+                      {:otp "sent"})
+    (res/forbidden
+     {:message "Su sesión no está autorizada para acceder este recurso."
+      :code "forbidden"})))
+
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -126,6 +135,8 @@
                         :json-options {:key-fn keyword}))
                      bootstrap/json-body]
      ["/about" {:get about-page}]
+     ["/customers"
+      ["/otp" {:post [:send-otp send-otp]}]]
      ["/facephi"
       ["/authentication"] {:post [:authenticate-user authenticate-user]}
       ["/devices/:deviceid" {:get get-device}]
