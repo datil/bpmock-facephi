@@ -3,7 +3,7 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
-            [ring.util.response :as ring-resp]
+            [bpmock-facephi.response :as res]
             [cheshire.core :as json]))
 
 (defn about-page
@@ -20,42 +20,43 @@
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (if (= (:deviceid path-params) "001")
-    (ring-resp/response
-      {:id "001"
-       :type "tablet"
-       :created "2015-10-03T17:54:14.004Z"})
-    (-> (ring-resp/response {:message "Dispositivo no registrado"
-                             :code "not_found"})
-        (ring-resp/status 404))))
+    (res/ok {:id "001"
+             :type "tablet"
+             :created "2015-10-03T17:54:14.004Z"})
+    (res/not-found {:message "Dispositivo no registrado"
+                    :code "not_found"})))
 
 (defn get-username
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (case (:username path-params)
-    "rosaaviles1604" (ring-resp/response
-                      {:username "rosaaviles1604"
-                       :devices [{:type "tablet"}
-                                 {:type "smartphone"}]})
-    "dschuldt" (ring-resp/response
-                {:username "dschuldt"
-                 :devices [{:type "smartphone"}]})
-    (-> (ring-resp/response {:message "El usuario no está enrolado en FacePhi Service."
-                             :code "not_found"})
-        (ring-resp/status 404))))
+    "rosaaviles1604" (res/ok {:username "rosaaviles1604"
+                              :devices [{:type "tablet"}
+                                        {:type "smartphone"}]})
+    "dschuldt" (res/ok {:username "dschuldt"
+                        :devices [{:type "smartphone"}]})
+    (res/not-found {:message "El usuario no está enrolado en FacePhi Service."
+                    :code "not_found"})))
 
 (defn register-device
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (case (:username path-params)
-    "rosaaviles1604" (-> (ring-resp/response {:message "El dispositivo fue creado con éxito."})
-                         (ring-resp/status 201))
-    "dschuldt" (-> (ring-resp/response
-                    {:message "Este tipo de dispositivo ya existe."
-                     :code "conflict"})
-                   (ring-resp/status 409))
-    (-> (ring-resp/response {:message "Su sesión no está autorizada para acceder este recurso."
-                             :code "forbidden"})
-        (ring-resp/status 403))))
+    "rosaaviles1604" (res/created {:message "El dispositivo fue creado con éxito."})
+    "dschuldt" (res/conflict {:message "Este tipo de dispositivo ya existe."
+                              :code "conflict"})
+    (res/forbidden {:message "Su sesión no está autorizada para acceder este recurso."
+                    :code "forbidden"})))
+
+(defn update-device
+  [{:keys [path-params] :as request}]
+  (Thread/sleep 2000)
+  (case (:username path-params)
+    "rosaaviles1604" (res/ok {:message "El dispositivo fue actualizado con éxito."})
+    "dschuldt" (res/not-found {:message "El dispositivo no existe."
+                               :code "not_found"})
+    (res/forbidden {:message "Su sesión no está autorizada para acceder este recurso."
+                    :code "forbidden"})))
 
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -69,7 +70,8 @@
       ["/devices/:deviceid" {:get get-device}]
       ["/users"
        ["/:username" {:get [:get-username get-username]}
-        ["/device-registration" {:post [:register-device register-device]}]]]]]]])
+        ["/device-registration" {:post [:register-device register-device]}]
+        ["/device-update" {:post [:update-device update-device]}]]]]]]])
 
 ;; Consumed by bpmock-facephi.server/create-server
 ;; See bootstrap/default-interceptors for additional options you can configure
