@@ -107,6 +107,15 @@
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))
 
+(defn retrain-user
+  [{:keys [path-params] :as request}]
+  (case (:username path-params)
+    "rosaaviles1604" (res/ok
+                      {:username "rosaaviles1604"})
+    (res/unauthorized
+     {:message "El usuario o contraseña no es válido."
+      :code "unauthorized"})))
+
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -122,6 +131,7 @@
       ["/devices/:deviceid" {:get get-device}]
       ["/users" {:post [:register-user register-user]}
        ["/:username" {:get [:get-username get-username]}
+        ["/retrain" {:post [:retrain-user retrain-user]}]
         ["/device-registration" {:post [:register-device register-device]}]
         ["/device-update" {:post [:update-device update-device]}]]]]]]])
 
