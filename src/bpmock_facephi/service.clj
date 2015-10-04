@@ -108,10 +108,10 @@
       :code "unauthorized"})))
 
 (defn retrain-user
-  [{:keys [path-params] :as request}]
-  (case (:username path-params)
-    "rosaaviles1604" (res/ok
-                      {:username "rosaaviles1604"})
+  [{:keys [path-params json-params] :as request}]
+  (case [(:username path-params) (:password json-params)]
+    ["rosaaviles1604" "123"] (res/ok
+                              {:username "rosaaviles1604"})
     (res/unauthorized
      {:message "El usuario o contraseña no es válido."
       :code "unauthorized"})))
