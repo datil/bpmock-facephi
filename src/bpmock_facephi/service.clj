@@ -28,6 +28,21 @@
                              :code "404"})
         (ring-resp/status 404))))
 
+(defn get-username
+  [{:keys [path-params] :as request}]
+  (Thread/sleep 2000)
+  (case (:username path-params)
+    "rosaaviles1604" (ring-resp/response
+                      {:username "rosaaviles1604"
+                       :devices [{:type "tablet"}
+                                 {:type "smartphone"}]})
+    "dschuldt" (ring-resp/response
+                {:username "dschuldt"
+                 :devices [{:type "smartphone"}]})
+    (-> (ring-resp/response {:message "El usuario no está enrolado en FacePhi Service."
+                             :code "404"})
+        (ring-resp/status 404))))
+
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -36,7 +51,10 @@
      ^:interceptors [(body-params/body-params)
                      bootstrap/json-body]
      ["/about" {:get about-page}]
-     ["/facephi/devices/:deviceid" {:get get-device}]]]])
+     ["/facephi"
+      ["/devices/:deviceid" {:get get-device}]
+      ["/users"
+       ["/:username" {:get [:get-username get-username]}]]]]]])
 
 ;; Consumed by bpmock-facephi.server/create-server
 ;; See bootstrap/default-interceptors for additional options you can configure
@@ -62,5 +80,4 @@
               ;; Either :jetty, :immutant or :tomcat (see comments in project.clj)
               ::bootstrap/type :jetty
               ;;::bootstrap/host "localhost"
-              ::bootstrap/port 80})
-
+              ::bootstrap/port 8080})
