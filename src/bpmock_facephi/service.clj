@@ -68,8 +68,8 @@
       :code "forbidden"})))
 
 (defn register-user
-  [{:keys [json-resp] :as request}]
-  (case (:username json-resp)
+  [{:keys [json-params] :as request}]
+  (case (:username json-params)
     "rosaaviles1604" (res/created
                       {:username "rosaaviles1604"})
     "dschuldt" (res/bad-request
@@ -83,26 +83,26 @@
       :code "unauthorized"})))
 
 (defn authenticate-user
-  [{:keys [json-resp] :as request}]
-  (case (:username json-resp)
-    "rosaaviles1604" (res/ok
-                      {:customer
-                       {:status "True"
-                        :transaction-cost "0.35"
-                        :last-access "10/4/2015 9:24:09 AM"
-                        :unknown-parameter-2 "S"
-                        :visit-number "1234567"
-                        :location "12345678901234567890123456789012"
-                        :visitor-id "1234567890"
-                        :contract-number 41
-                        :concurrency-token nil
-                        :query-cost "0.00"
-                        :username "rosaaviles1604"
-                        :code "0000"
-                        :space nil
-                        :rate-code "0"
-                        :bpapp-session-token "21f75920-6aa3-11e5-8825"
-                        :customer-name "JIMENEZ PITA MANUEL"}})
+  [{:keys [json-params] :as request}]
+  (case (:device_id json-params)
+    "1234" (res/ok
+            {:customer
+             {:status "True"
+              :transaction-cost "0.35"
+              :last-access "10/4/2015 9:24:09 AM"
+              :unknown-parameter-2 "S"
+              :visit-number "1234567"
+              :location "12345678901234567890123456789012"
+              :visitor-id "1234567890"
+              :contract-number 41
+              :concurrency-token nil
+              :query-cost "0.00"
+              :username "rosaaviles1604"
+              :code "0000"
+              :space nil
+              :rate-code "0"
+              :bpapp-session-token "21f75920-6aa3-11e5-8825"
+              :customer-name "JIMENEZ PITA MANUEL"}})
     (res/unauthorized
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))
@@ -136,9 +136,9 @@
                      bootstrap/json-body]
      ["/about" {:get about-page}]
      ["/customers"
-      ["/otp" {:post [:send-otp send-otp]}]]
+      ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/facephi"
-      ["/authentication"] {:post [:authenticate-user authenticate-user]}
+      ["/authentication" {:post [:authenticate-user authenticate-user]}]
       ["/devices/:deviceid" {:get get-device}]
       ["/users" {:post [:register-user register-user]}
        ["/:username" {:get [:get-username get-username]}
