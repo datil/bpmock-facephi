@@ -25,7 +25,7 @@
        :type "tablet"
        :created "2015-10-03T17:54:14.004Z"})
     (-> (ring-resp/response {:message "Dispositivo no registrado"
-                             :code "404"})
+                             :code "not_found"})
         (ring-resp/status 404))))
 
 (defn get-username
@@ -40,8 +40,22 @@
                 {:username "dschuldt"
                  :devices [{:type "smartphone"}]})
     (-> (ring-resp/response {:message "El usuario no está enrolado en FacePhi Service."
-                             :code "404"})
+                             :code "not_found"})
         (ring-resp/status 404))))
+
+(defn register-device
+  [{:keys [path-params] :as request}]
+  (Thread/sleep 2000)
+  (case (:username path-params)
+    "rosaaviles1604" (-> (ring-resp/response {:message "El dispositivo fue creado con éxito."})
+                         (ring-resp/status 201))
+    "dschuldt" (-> (ring-resp/response
+                    {:message "Este tipo de dispositivo ya existe."
+                     :code "conflict"})
+                   (ring-resp/status 409))
+    (-> (ring-resp/response {:message "Su sesión no está autorizada para acceder este recurso."
+                             :code "forbidden"})
+        (ring-resp/status 403))))
 
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -54,7 +68,8 @@
      ["/facephi"
       ["/devices/:deviceid" {:get get-device}]
       ["/users"
-       ["/:username" {:get [:get-username get-username]}]]]]]])
+       ["/:username" {:get [:get-username get-username]}
+        ["/device-registration" {:post [:register-device register-device]}]]]]]]])
 
 ;; Consumed by bpmock-facephi.server/create-server
 ;; See bootstrap/default-interceptors for additional options you can configure
