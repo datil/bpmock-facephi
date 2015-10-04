@@ -23,7 +23,7 @@
     (res/ok {:id "001"
              :type "tablet"
              :created "2015-10-03T17:54:14.004Z"})
-    (res/not-found {:message "Dispositivo no registrado"
+    (res/not-found {:message "Dispositivo no registrado."
                     :code "not_found"})))
 
 (defn get-username
@@ -58,6 +58,17 @@
     (res/forbidden {:message "Su sesión no está autorizada para acceder este recurso."
                     :code "forbidden"})))
 
+(defn register-user
+  [{:keys [json-resp] :as request}]
+  (case (:username json-resp)
+    "rosaaviles1604" (res/created {:username "rosaaviles1604"})
+    "dschuldt" (res/bad-request {:message "El usuario ya está registrado."
+                                 :code "bad_request"})
+    "scarface" (res/bad-request {:message "Los datos biométricos no son válidos."
+                                 :code "bad_request"})
+    (res/forbidden {:message "El OTP no es válido."
+                    :code "forbidden"})))
+
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -68,7 +79,7 @@
      ["/about" {:get about-page}]
      ["/facephi"
       ["/devices/:deviceid" {:get get-device}]
-      ["/users"
+      ["/users" {:post [:register-user register-user]}
        ["/:username" {:get [:get-username get-username]}
         ["/device-registration" {:post [:register-device register-device]}]
         ["/device-update" {:post [:update-device update-device]}]]]]]]])

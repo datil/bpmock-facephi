@@ -29,3 +29,8 @@
   [body]
   (-> (ring-resp/response body)
       (ring-resp/status 409)))
+
+(defn bad-request
+  [body]
+  (-> (ring-resp/response body)
+      (ring-resp/status 400)))
