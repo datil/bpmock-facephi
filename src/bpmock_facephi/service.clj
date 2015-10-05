@@ -21,9 +21,8 @@
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (if (= (:deviceid path-params) "001")
-    (res/ok {:id "001"
-             :type "tablet"
-             :created "2015-10-03T17:54:14.004Z"})
+    (res/ok {:fingerprint "001"
+             :type "tablet"})
     (res/not-found {:message "Dispositivo no registrado."
                     :code "not_found"})))
 
