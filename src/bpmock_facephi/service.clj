@@ -205,16 +205,61 @@
      {:message "Su sesión no está autorizada para acceder este recurso."
       :code "forbidden"})))
 
+(defn accounts
+  [request]
+  (res/ok {:accounts [{:description "1063365620 Cta. Ahorros",
+                       :type-label "Cta. Ahorros",
+                       :type "10",
+                       :available-balance "475.96",
+                       :accounting-balance "475.96",
+                       :customer-name "MARTINEZ HEISENBERG",
+                       :number "1063365620",
+                       :id "1"}]}))
+
+(defn detectid
+  [request]
+  (res/ok {:detectid-image {:username "heisenberg"
+                            :id "2233442"
+                            :description "Breaking Bad"
+                            :uri "/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/p/o/pollos-whi-thum.jpg"}}))
+(defn get-customer
+  [request]
+  (res/ok {:customer
+           {:status "True"
+            :transaction-cost "0.35"
+            :last-access "10/4/2015 9:24:09 AM"
+            :unknown-parameter-2 "S"
+            :visit-number "1234567"
+            :location "12345678901234567890123456789012"
+            :visitor-id "1234567890"
+            :contract-number 41
+            :concurrency-token nil
+            :query-cost "0.00"
+                                        ; :username "rosaaviles1604"
+            :username "raviles1964"
+            :code "0000"
+            :space nil
+            :rate-code "0"
+            :bpapp-session-token "21f75920-6aa3-11e5-8825"
+            :customer-name "JIMENEZ PITA MANUEL"}}))
+
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
                         a bpapp-api."
           :version "1.0.0"}}
-  [[["/" ^:interceptors [bootstrap/json-body
-                         (swagger/body-params)
-                         (swagger/coerce-request)]
-     ["/customers"
+  ;; Defines "/" and "/about" routes with their associated :get handlers.
+  ;; The interceptors defined after the verb map (e.g., {:get home-page}
+  ;; apply to / and its children (/about).
+  [[["/"
+     ^:interceptors [bootstrap/json-body
+                     (swagger/body-params)
+                     (swagger/coerce-request)]
+     ["/customers" {:get [:get-customer get-customer]}
       ["/:username/otp" {:post [:send-otp send-otp]}]]
+     ["/accounts" {:get [:accounts accounts]}]
+     ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
       ["/devices/:fingerprint" {:get get-device}]
