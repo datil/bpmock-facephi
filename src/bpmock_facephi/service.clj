@@ -1,32 +1,46 @@
 (ns bpmock-facephi.service
-  (:require [io.pedestal.http :as bootstrap]
+  (:require [bpmock-facephi.response :as res]
+            [bpmock-facephi.schema :as schema]
+            [cheshire.core :as json]
+            [io.pedestal.http :as bootstrap]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
+            [io.pedestal.interceptor.helpers :as interceptor]
+            [pedestal.swagger.core :as swagger]
+            [pedestal.swagger.doc :as swagger.doc]
             [ring.util.response :as ring-resp]
-            [bpmock-facephi.response :as res]
-            [cheshire.core :as json]))
+            [schema.core :as s]))
 
-(defn about-page
-  [request]
-  (ring-resp/response (format "Clojure %s - served from %s"
-                              (clojure-version)
-                              (route/url-for ::about-page))))
+(defn annotate
+  "Adds metatata m to a swagger route"
+  [m]
+  (swagger.doc/annotate m (interceptor/before ::annotate identity)))
 
-(defn home-page
-  [request]
-  (ring-resp/response "Hello World!"))
-
-(defn get-device
+(swagger/defhandler get-device
+  {:summary "Consulta si un dispositivo está registrado."
+   :description "La consulta se realiza en el API de Movilmático."
+   :parameters {:path schema/GetDeviceRequestPathParams}
+   :responses {200 {:description "El dispositivo está registrado."
+                    :schema schema/GetDeviceResponse}
+               404 {:description "El dispositivo no está registrado."
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
-  (if (= (:deviceid path-params) "001")
+  (if (= (:device-id path-params) "001")
     (res/ok {:fingerprint "001"
              :type "tablet"})
     (res/not-found {:message "Dispositivo no registrado."
                     :code "not_found"})))
 
-(defn get-username
+(swagger/defhandler get-username
+  {:summary "Consulta si un usuario está matriculado en autenticación biométrica."
+   :description "La consulta se hace al servicio de autenticación del banco."
+   :parameters {:path schema/GetUsernameRequestPathParams}
+   :responses {200 {:description "El usuario está matriculada."
+                    :schema schema/GetUsernameResponse}
+               404 {:description "El usuario no está matriculado"
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (case (:username path-params)
@@ -41,7 +55,20 @@
      {:message "El usuario no está enrolado en FacePhi Service."
       :code "not_found"})))
 
-(defn register-device
+(swagger/defhandler register-device
+  {:summary "Registra un nuevo dispositivo."
+   :description "Esta llamada asume que el usuario ya está matriculado en
+                 autenticación biométrica. La respuesta es vacía."
+   :parameters {:path schema/RegisterDeviceRequestPathParams
+                :body schema/RegisterDeviceRequest
+                :header schema/AuthenticatedRequestHeader}
+   :responses {201 {:description "El dispositivo se registró con éxito."}
+               409 {:description "Ya existe un dispositivo de ese tipo registrado."
+                    :schema schema/ErrorResponse}
+               403 {:description "La llave de sesión es inválida."
+                    :schema schema/ErrorResponse}
+               404 {:description "El usuario no existe."
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (case (:username path-params)
@@ -54,7 +81,19 @@
      {:message "Su sesión no está autorizada para acceder este recurso."
       :code "forbidden"})))
 
-(defn update-device
+(swagger/defhandler replace-device
+  {:summary "Reemplaza un dispositivo."
+   :description "El dispositivo nuevo está representado en el cuerpo del pedido.
+                 El dispositivo a reemplazar se referencia con su 'fingerprint'
+                 y el usuario respectivo en la URL."
+   :parameters {:path schema/ReplaceDeviceRequestPathParams
+                :body schema/ReplaceDeviceRequest
+                :header schema/AuthenticatedRequestHeader}
+   :responses {200 {:description "El dispositivo fue reemplazado con éxito."}
+               404 {:description "El dispositivo o usuario no existen."
+                    :schema schema/ErrorResponse}
+               403 {:description "La llave de sesión es inválida"
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (Thread/sleep 2000)
   (case (:username path-params)
@@ -67,7 +106,21 @@
      {:message "Su sesión no está autorizada para acceder este recurso."
       :code "forbidden"})))
 
-(defn register-user
+(swagger/defhandler register-user
+  {:summary "Matricula un nuevo usuario en autenticación biométrica."
+   :description "Crea un nuevo dispositivo y registra al usuario en el servicio
+                 de autenticación biométrica."
+   :parameters {:body schema/RegisterUserRequest
+                :header schema/AuthenticatedRequestHeader}
+   :responses {201 {:description "El usuario fue matriculado con éxito."}
+               400 {:description "Los datos son inválidos."
+                    :schema schema/ErrorResponse}
+               409 {:description "El usuario ya está registrado."
+                    :schema schema/ErrorResponse}
+               401 {:description "El código OTP es incorrecto."
+                    :schema schema/ErrorResponse}
+               403 {:description "La llave de sesión es inválida."
+                    :schema schema/ErrorResponse}}}
   [{:keys [json-params] :as request}]
   (case (:username json-params)
     "rosaaviles1604" (res/created
@@ -82,7 +135,15 @@
      {:message "El OTP no es válido."
       :code "unauthorized"})))
 
-(defn authenticate-user
+(swagger/defhandler authenticate-user
+  {:summary "Autentica a un usuario con su dispositivo y perfil biométrico."
+   :description "El 'fingerprint' del dispositivo equivale al usuario y el
+                 perfil biométrico a la contraseña."
+   :parameters {:body schema/AuthenticateRequest}
+   :responses {200 {:description "El usuario fue autenticado"
+                    :schema schema/AuthenticateResponse}
+               401 {:description "El usuario no fue autenticado"
+                    :schema schema/ErrorResponse}}}
   [{:keys [json-params] :as request}]
   (case (:device_id json-params)
     "1234" (res/ok
@@ -92,14 +153,12 @@
               :last-access "10/4/2015 9:24:09 AM"
               :unknown-parameter-2 "S"
               :visit-number "1234567"
-              :location "12345678901234567890123456789012"
               :visitor-id "1234567890"
               :contract-number 41
-              :concurrency-token nil
+              :concurrency-token "12345678901234567890123456789012"
               :query-cost "0.00"
               :username "rosaaviles1604"
               :code "0000"
-              :space nil
               :rate-code "0"
               :bpapp-session-token "21f75920-6aa3-11e5-8825"
               :customer-name "JIMENEZ PITA MANUEL"}})
@@ -107,7 +166,20 @@
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))
 
-(defn retrain-user
+(swagger/defhandler retrain-user
+  {:summary "Reentrena el perfil biométrico de un usuario."
+   :description "El reentrenamiento está restringido a usuarios autenticados
+                 con usuario y contraseña."
+   :parameters {:path schema/RetrainRequestPathParams
+                :body schema/RetrainRequest
+                :header schema/AuthenticatedRequestHeader}
+   :responses {200 {:description "El perfil se re-entrenó con éxito."}
+               400 {:description "Los datos son inválidos."
+                    :schema schema/ErrorResponse}
+               403 {:description "La llave de sesión no es válida."
+                    :schema schema/ErrorResponse}
+               404 {:description "El usuario no está matriculado."
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params json-params] :as request}]
   (case [(:username path-params) (:password json-params)]
     ["rosaaviles1604" "123"] (res/ok
@@ -116,7 +188,15 @@
      {:message "El usuario o contraseña no es válido."
       :code "unauthorized"})))
 
-(defn send-otp
+(swagger/defhandler send-otp
+  {:summary "Envía un código OTP al usuario."
+   :description "El envío está restringido a usuarios autenticados con
+                 usuario y contraseña."
+   :parameters {:path schema/SendOTPRequestPathParams
+                :header schema/AuthenticatedRequestHeader}
+   :responses {200 {:description "El OTP fué enviado con éxito."}
+               403 {:description "La llave de sesión no es válida."
+                    :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (case (:username path-params)
     "rosaaviles1604" (res/ok
@@ -125,26 +205,26 @@
      {:message "Su sesión no está autorizada para acceder este recurso."
       :code "forbidden"})))
 
-(defroutes routes
-  ;; Defines "/" and "/about" routes with their associated :get handlers.
-  ;; The interceptors defined after the verb map (e.g., {:get home-page}
-  ;; apply to / and its children (/about).
-  [[["/" {:get home-page}
-     ^:interceptors [(body-params/body-params
-                      (body-params/default-parser-map
-                        :json-options {:key-fn keyword}))
-                     bootstrap/json-body]
-     ["/about" {:get about-page}]
+(swagger/defroutes routes
+  {:info {:title "bpmock-facephi"
+          :description "Simulador de servicio de autenticación biométrica anexo
+                        a bpapp-api."
+          :version "1.0.0"}}
+  [[["/" ^:interceptors [bootstrap/json-body
+                         (swagger/body-params)
+                         (swagger/coerce-request)]
      ["/customers"
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
-      ["/devices/:deviceid" {:get get-device}]
+      ["/devices/:fingerprint" {:get get-device}]
       ["/users" {:post [:register-user register-user]}
        ["/:username" {:get [:get-username get-username]}
         ["/retrain" {:post [:retrain-user retrain-user]}]
-        ["/device-registration" {:post [:register-device register-device]}]
-        ["/device-update" {:post [:update-device update-device]}]]]]]]])
+        ["/devices/registration" {:post [:register-device register-device]}]
+        ["/devices/:fingerprint/replacement" {:post [:replace-device replace-device]}]]]]
+     ["/doc" {:get [(swagger/swagger-json)]}]
+     ["/*resource" {:get [(swagger/swagger-ui)]}]]]])
 
 ;; Consumed by bpmock-facephi.server/create-server
 ;; See bootstrap/default-interceptors for additional options you can configure
@@ -155,7 +235,7 @@
               ;; default interceptors will be ignored.
               ;; ::bootstrap/interceptors []
               ::bootstrap/routes routes
-
+              ::bootstrap/router :linear-search
               ;; Uncomment next line to enable CORS support, add
               ;; string(s) specifying scheme, host and port for
               ;; allowed source(s):
