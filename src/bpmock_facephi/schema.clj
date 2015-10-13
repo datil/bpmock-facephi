@@ -30,7 +30,7 @@
                     (req :description) s/Str}]})
 
 (s/defschema AuthenticatedRequestHeader
-  {(req :bpapp-session-token) s/Str})
+  {(req "bpapp-session-token") s/Str})
 
 (s/defschema RegisterDeviceRequestPathParams
   {(req :username) s/Str})

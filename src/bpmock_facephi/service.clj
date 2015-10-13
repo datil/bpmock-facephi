@@ -26,7 +26,7 @@
                404 {:description "El dispositivo no está registrado."
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
-  (Thread/sleep 2000)
+  (Thread/sleep 600)
   (if (= (:device-id path-params) "001")
     (res/ok {:fingerprint "001"
              :type "tablet"})
@@ -42,7 +42,7 @@
                404 {:description "El usuario no está matriculado"
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
-  (Thread/sleep 2000)
+  (Thread/sleep 600)
   (case (:username path-params)
     "rosaaviles1604" (res/ok
                       {:username "rosaaviles1604"
@@ -70,7 +70,7 @@
                404 {:description "El usuario no existe."
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
-  (Thread/sleep 2000)
+  (Thread/sleep 600)
   (case (:username path-params)
     "rosaaviles1604" (res/created
                       {:message "El dispositivo fue creado con éxito."})
@@ -95,7 +95,7 @@
                403 {:description "La llave de sesión es inválida"
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
-  (Thread/sleep 2000)
+  (Thread/sleep 600)
   (case (:username path-params)
     "rosaaviles1604" (res/ok
                       {:message "El dispositivo fue actualizado con éxito."})
@@ -121,8 +121,8 @@
                     :schema schema/ErrorResponse}
                403 {:description "La llave de sesión es inválida."
                     :schema schema/ErrorResponse}}}
-  [{:keys [json-params] :as request}]
-  (case (:username json-params)
+  [{:keys [body-params] :as request}]
+  (case (:username body-params)
     "rosaaviles1604" (res/created
                       {:username "rosaaviles1604"})
     "dschuldt" (res/bad-request
@@ -144,8 +144,8 @@
                     :schema schema/AuthenticateResponse}
                401 {:description "El usuario no fue autenticado"
                     :schema schema/ErrorResponse}}}
-  [{:keys [json-params] :as request}]
-  (case (:device_id json-params)
+  [{:keys [body-params] :as request}]
+  (case (:fingerprint body-params)
     "1234" (res/ok
             {:customer
              {:status "True"
@@ -180,8 +180,8 @@
                     :schema schema/ErrorResponse}
                404 {:description "El usuario no está matriculado."
                     :schema schema/ErrorResponse}}}
-  [{:keys [path-params json-params] :as request}]
-  (case [(:username path-params) (:password json-params)]
+  [{:keys [path-params body-params] :as request}]
+  (case [(:username path-params) (:password body-params)]
     ["rosaaviles1604" "123"] (res/ok
                               {:username "rosaaviles1604"})
     (res/unauthorized
@@ -214,14 +214,17 @@
                        :accounting-balance "475.96",
                        :customer-name "MARTINEZ HEISENBERG",
                        :number "1063365620",
-                       :id "1"}]}))
+                       :id "1"}]
+           :credit-cards []
+           :loans        []
+           :investments  []}))
 
 (defn detectid
   [request]
-  (res/ok {:detectid-image {:username "heisenberg"
+  (res/ok {:detectid-image {:username (get-in request [:params :username])
                             :id "2233442"
-                            :description "Breaking Bad"
-                            :uri "/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/p/o/pollos-whi-thum.jpg"}}))
+                            :description "Estrellita donde estás."
+                            :uri "/iso.png"}}))
 (defn get-customer
   [request]
   (res/ok {:customer
@@ -235,8 +238,7 @@
             :contract-number 41
             :concurrency-token nil
             :query-cost "0.00"
-                                        ; :username "rosaaviles1604"
-            :username "raviles1964"
+            :username (get-in request [:params :username])
             :code "0000"
             :space nil
             :rate-code "0"
