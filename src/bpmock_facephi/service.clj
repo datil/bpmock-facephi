@@ -36,8 +36,9 @@
 (swagger/defhandler get-username
   {:summary "Consulta si un usuario está matriculado en autenticación biométrica."
    :description "La consulta se hace al servicio de autenticación del banco."
-   :parameters {:path schema/GetUsernameRequestPathParams}
-   :responses {200 {:description "El usuario está matriculada."
+   :parameters {:path schema/GetUsernameRequestPathParams
+                :header schema/AuthenticatedRequestHeader}
+   :responses {200 {:description "El usuario está matriculado."
                     :schema schema/GetUsernameResponse}
                404 {:description "El usuario no está matriculado"
                     :schema schema/ErrorResponse}}}
@@ -46,11 +47,20 @@
   (case (:username path-params)
     "rosaaviles1604" (res/ok
                       {:username "rosaaviles1604"
-                       :devices [{:type "tablet"}
-                                 {:type "smartphone"}]})
+                       :devices [{:fingerprint "ABCDE"
+                                  :type "tablet"
+                                  :created "2015-10-06T21:55:59Z"
+                                  :description "iPad"}
+                                 {:fingerprint "DECEE"
+                                  :type "smartphone"
+                                  :created "2015-10-06T21:55:59Z"
+                                  :description "Nexus"}]})
     "dschuldt" (res/ok
                 {:username "dschuldt"
-                 :devices [{:type "smartphone"}]})
+                 :devices [{:fingerprint "XYZ"
+                            :type "smartphone"
+                            :created "2015-10-06T21:55:59Z"
+                            :description "iPhone"}]})
     (res/not-found
      {:message "El usuario no está enrolado en FacePhi Service."
       :code "not_found"})))
