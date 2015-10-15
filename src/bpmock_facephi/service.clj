@@ -134,7 +134,15 @@
   [{:keys [body-params] :as request}]
   (case (:username body-params)
     "rosaaviles1604" (res/created
-                      {:username "rosaaviles1604"})
+                      {:username "rosaaviles1604"
+                       :created "2015-10-13T15:11:11Z"
+                       :last_updated "2015-10-13T15:11:11Z"
+                       :is_active 1
+                       :identification "0914617584"
+                       :devices [{:type "smartphone"
+                                  :fingerprint "ABCDE"
+                                  :description "iPhone"
+                                  :created "2015-10-13T15:11:11Z"}]})
     "dschuldt" (res/bad-request
                 {:message "El usuario ya está registrado."
                  :code "bad_request"})
