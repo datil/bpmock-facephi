@@ -53,8 +53,7 @@
   {(req :username) s/Str
    (req :device) {(req :fingerprint) s/Str
                   (req :type) SupportedDeviceTypes
-                  (req :description) s/Str
-                  (req :created) s/Str}
+                  (req :description) s/Str}
    (req :templates) [s/Str]
    (req :otp) s/Str})
 
