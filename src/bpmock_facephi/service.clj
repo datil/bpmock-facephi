@@ -27,7 +27,7 @@
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
   (Thread/sleep 600)
-  (if (= (:device-id path-params) "001")
+  (if (= (:fingerprint path-params) "001")
     (res/ok {:fingerprint "001"
              :type "tablet"})
     (res/not-found {:message "Dispositivo no registrado."
