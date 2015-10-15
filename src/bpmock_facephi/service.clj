@@ -169,13 +169,16 @@
              {:status "True"
               :transaction-cost "0.35"
               :last-access "10/4/2015 9:24:09 AM"
-              :unknown-parameter-2 "S"
+              :unknown-field "1"
               :visit-number "1234567"
+              :identification "0914617584"
+              :legal-entity-type "N"
               :visitor-id "1234567890"
-              :contract-number 41
+              :contract-number "41"
               :concurrency-token "12345678901234567890123456789012"
               :query-cost "0.00"
               :username "rosaaviles1604"
+              :email "e@datil.co"
               :code "0000"
               :rate-code "0"
               :bpapp-session-token "21f75920-6aa3-11e5-8825"
@@ -249,16 +252,17 @@
            {:status "True"
             :transaction-cost "0.35"
             :last-access "10/4/2015 9:24:09 AM"
-            :unknown-parameter-2 "S"
+            :unknown-field "1"
             :visit-number "1234567"
-            :location "12345678901234567890123456789012"
+            :identification "0914617584"
+            :legal-entity-type "N"
             :visitor-id "1234567890"
-            :contract-number 41
-            :concurrency-token nil
+            :contract-number "41"
+            :concurrency-token "12345678901234567890123456789012"
             :query-cost "0.00"
-            :username (get-in request [:params :username])
+            :username "rosaaviles1604"
+            :email "e@datil.co"
             :code "0000"
-            :space nil
             :rate-code "0"
             :bpapp-session-token "21f75920-6aa3-11e5-8825"
             :customer-name "JIMENEZ PITA MANUEL"}}))

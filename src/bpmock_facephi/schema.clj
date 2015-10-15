@@ -65,15 +65,18 @@
   {(req :customer) {(req :status) s/Str
                     (req :transaction-cost) s/Str
                     (req :last-access) s/Str
-                    (req :legal-entity-type) (s/enum :N :S)
                     (req :visit-number) s/Str
+                    (req :unknown-field) s/Str
                     (req :visitor-id) s/Str
                     (req :contract-number) s/Str
                     (req :concurrency-token) s/Str
                     (req :query-cost) s/Str
                     (req :username) s/Str
                     (req :code) s/Str
+                    (req :identification) s/Str
+                    (req :email) s/Str
                     (req :rate-code) s/Str
+                    (req :legal-entity-type) (s/enum :N :S)
                     (req :bpapp-session-token) s/Str
                     (req :customer-name) s/Str}})
 
