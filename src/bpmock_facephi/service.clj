@@ -47,6 +47,7 @@
   (case (:username path-params)
     "rosaaviles1604" (res/ok
                       {:username "rosaaviles1604"
+                       :blocked false
                        :devices [{:fingerprint "ABCDE"
                                   :type "tablet"
                                   :created "2015-10-06T21:55:59Z"
@@ -57,6 +58,7 @@
                                   :description "Nexus"}]})
     "dschuldt" (res/ok
                 {:username "dschuldt"
+                 :blocked true
                  :devices [{:fingerprint "XYZ"
                             :type "smartphone"
                             :created "2015-10-06T21:55:59Z"
