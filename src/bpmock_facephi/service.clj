@@ -26,7 +26,6 @@
                404 {:description "El dispositivo no está registrado."
                     :schema schema/ErrorResponse}}}
   [{:keys [path-params] :as request}]
-  (Thread/sleep 600)
   (if (= (:fingerprint path-params) "001")
     (res/ok {:fingerprint "001"
              :type "tablet"})
@@ -137,6 +136,16 @@
   (case (:username body-params)
     "rosaaviles1604" (res/created
                       {:username "rosaaviles1604"
+                       :created "2015-10-13T15:11:11Z"
+                       :last_updated "2015-10-13T15:11:11Z"
+                       :is_active 1
+                       :identification "0914617584"
+                       :devices [{:type "smartphone"
+                                  :fingerprint "ABCDE"
+                                  :description "iPhone"
+                                  :created "2015-10-13T15:11:11Z"}]})
+    "raviles1964" (res/created
+                      {:username "raviles1964"
                        :created "2015-10-13T15:11:11Z"
                        :last_updated "2015-10-13T15:11:11Z"
                        :is_active 1
@@ -265,7 +274,7 @@
             :contract-number "41"
             :concurrency-token "12345678901234567890123456789012"
             :query-cost "0.00"
-            :username "rosaaviles1604"
+            :username (get-in request [:params :username])
             :email "e@datil.co"
             :code "0000"
             :rate-code "0"
