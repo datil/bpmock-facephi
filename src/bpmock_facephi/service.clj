@@ -47,6 +47,7 @@
   (case (:username path-params)
     "rosaaviles1604" (res/ok
                       {:username "rosaaviles1604"
+                       :blocked false
                        :devices [{:fingerprint "ABCDE"
                                   :type "tablet"
                                   :created "2015-10-06T21:55:59Z"
@@ -57,6 +58,7 @@
                                   :description "Nexus"}]})
     "dschuldt" (res/ok
                 {:username "dschuldt"
+                 :blocked true
                  :devices [{:fingerprint "XYZ"
                             :type "smartphone"
                             :created "2015-10-06T21:55:59Z"
@@ -183,6 +185,9 @@
               :rate-code "0"
               :bpapp-session-token "21f75920-6aa3-11e5-8825"
               :customer-name "JIMENEZ PITA MANUEL"}})
+    "4565" (res/locked
+            {:code "locked"
+             :message "El uso de reconocimiento facial está bloqueado temporalmente. Por favor, ingrese con su usuario y contraseña para desbloquearlo."})
     (res/unauthorized
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))

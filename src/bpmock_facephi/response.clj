@@ -34,3 +34,8 @@
   [body]
   (-> (ring-resp/response body)
       (ring-resp/status 400)))
+
+(defn locked
+  [body]
+  (-> (ring-resp/response body)
+      (ring-resp/status 423)))
