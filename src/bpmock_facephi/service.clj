@@ -185,6 +185,9 @@
               :rate-code "0"
               :bpapp-session-token "21f75920-6aa3-11e5-8825"
               :customer-name "JIMENEZ PITA MANUEL"}})
+    "4565" (res/locked
+            {:code "locked"
+             :message "El uso de reconocimiento facial está bloqueado temporalmente. Por favor, ingrese con su usuario y contraseña para desbloquearlo."})
     (res/unauthorized
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))
