@@ -160,6 +160,11 @@
     "scarface" (res/bad-request
                 {:message "Los datos biométricos no son válidos."
                  :code "bad_request"})
+    "robinson" (res/server-error
+                {:code "server_error"
+                 :message "El servicio de reconocimiento facial no está disponible."})
+    "gaga" (res/server-error
+            "El servicio no está disponible.")
     (res/unauthorized
      {:message "El OTP no es válido."
       :code "unauthorized"})))
@@ -197,6 +202,11 @@
     "4565" (res/locked
             {:code "locked"
              :message "El uso de reconocimiento facial está bloqueado temporalmente. Por favor, ingrese con su usuario y contraseña para desbloquearlo."})
+    "0000" (res/server-error
+            {:code "server_error"
+             :message "El servicio de reconocimiento facial no está disponible."})
+    "1111" (res/server-error
+            "El servicio no está disponible. Error no recuperable.")
     (res/unauthorized
      {:message "El dispositivo o perfil biométrico no son correctos."
       :code "unauthorized"})))
@@ -219,6 +229,11 @@
   (case [(:username path-params) (:password body-params)]
     ["rosaaviles1604" "123"] (res/ok
                               {:username "rosaaviles1604"})
+    ["rosaaviles1604" "0000"] (res/server-error
+                               {:code "server_error"
+                                :message "El servicio de reconocimiento facial no está disponible."})
+    ["rosaaviles1604" "1111"] (res/server-error
+                               "El servicio no está disponible")
     (res/unauthorized
      {:message "El usuario o contraseña no es válido."
       :code "unauthorized"})))
