@@ -39,3 +39,8 @@
   [body]
   (-> (ring-resp/response body)
       (ring-resp/status 423)))
+
+(defn server-error
+  [body]
+  (-> (ring-resp/response body)
+      (ring-resp/status 500)))
