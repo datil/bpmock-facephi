@@ -49,6 +49,10 @@
    (req :type) SupportedDeviceTypes
    (req :description) s/Str})
 
+(s/defschema DeactivateDeviceRequestPathParams
+  {(req :username) s/Str
+   (req :fingerprint) s/Str})
+
 (s/defschema RegisterUserRequest
   {(req :username) s/Str
    (req :device) {(req :fingerprint) s/Str

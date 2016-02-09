@@ -117,6 +117,26 @@
      {:message "Su sesión no está autorizada para acceder este recurso."
       :code "forbidden"})))
 
+(swagger/defhandler deactivate-device
+  {:summary "Desactiva un dispositivo"
+   :description "El dispositivo a reemplazar se referencia con su fingerprint en la URL junto con el usuario respectivo."
+   :parameters {:path schema/DeactivateDeviceRequestPathParams}
+   :responses {200 {:description "El dispositivo fue desactivado con éxito"}
+               404 {:description "El dispositivo o usuario no existen."
+                    :schema schema/ErrorResponse}
+               403 {:description "La llave de sesión es inválida"
+                    :schema schema/ErrorResponse}}}
+  [{:keys [path-params] :as request}]
+  (Thread/sleep 600)
+  (case (:username path-params)
+    "rosaaviles1604" (res/ok {:message "El dispositivo fue desactivado con éxito."})
+    "dschuldt" (res/not-found
+                {:message "El dispositivo no existe."
+                 :code "not_found"})
+    (res/forbidden
+     {:message "Su sesión no está autorizada para acceder este recurso."
+      :code "forbidden"})))
+
 (swagger/defhandler register-user
   {:summary "Matricula un nuevo usuario en autenticación biométrica."
    :description "Crea un nuevo dispositivo y registra al usuario en el servicio
@@ -320,7 +340,8 @@
        ["/:username" {:get [:get-username get-username]}
         ["/retrain" {:post [:retrain-user retrain-user]}]
         ["/devices/registration" {:post [:register-device register-device]}]
-        ["/devices/:fingerprint/replacement" {:post [:replace-device replace-device]}]]]]
+        ["/devices/:fingerprint/replacement" {:post [:replace-device replace-device]}]
+        ["/devices/:fingerprint/deletion" {:post [:deactivate-device deactivate-device]}]]]]
      ["/doc" {:get [(swagger/swagger-json)]}]
      ["/*resource" {:get [(swagger/swagger-ui)]}]]]])
 
