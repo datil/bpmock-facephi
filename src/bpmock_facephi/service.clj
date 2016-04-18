@@ -289,6 +289,23 @@
            :loans        []
            :investments  []}))
 
+(defn debit-accounts
+  [request]
+  (res/ok {:debit-accounts [{:description "MASTERCARD",
+                             :id "3",
+                             :number "5476XXXXXXXX5193",
+                             :type "cc",
+                             :type-label "Tarjeta de Crédito"
+                             :customer-made "AVILES CHAVEZ ROSA",
+                             :max-amount "4,999.00"}
+                            {:description "1012345678 Cuenta Ahorros",
+                             :id "1",
+                             :number "1064385205",
+                             :type "10",
+                             :type-label "Cuenta de Ahorros"
+                             :customer-made "AVILES CHAVEZ ROSA",
+                             :max-amount "4,999.00"}]}))
+
 (defn detectid
   [request]
   (res/ok {:detectid-image {:username (get-in request [:params :username])
@@ -332,6 +349,7 @@
      ["/customers" {:get [:get-customer get-customer]}
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/accounts" {:get [:accounts accounts]}]
+     ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
