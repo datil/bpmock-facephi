@@ -372,6 +372,27 @@
                                :customer-name "ORALIA CLEMENTINA BRIONES T",
                                :telephone-number "042100580"}}))
 
+(defn energy-services
+  [request]
+  (res/ok {:energy-services [{:max-amount " 4,999.00",
+                              :company-id "201",
+                              :customer-name "TANIA MACIAS BRIONES",
+                              :description "1131845 ELECTRICA DE GUAYAQU",
+                              :account-number "1131845",
+                              :type "03",
+                              :id "9",
+                              :supports-credit-card true,
+                              :commision "0.35"},
+                             {:max-amount " 4,999.00",
+                              :company-id "201",
+                              :customer-name "HELEN MACIAS",
+                              :description "720986 ELECTRICA DE GUAYAQU",
+                              :account-number "720986",
+                              :type "03",
+                              :id "10",
+                              :supports-credit-card false,
+                              :commision ""}]}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -392,6 +413,7 @@
      ["/telephone-services" {:get [:telephone-services telephone-services]}
       ["/:number" {:get [:telephone-detail telephone-detail]}
        ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
+     ["/energy-services" {:get [:energy-services energy-services]}]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
