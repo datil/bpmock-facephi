@@ -354,6 +354,10 @@
                                  :supports-credit-card false,
                                  :commision ""}]}))
 
+(defn telephone-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
+
 (defn telephone-detail
   [request]
   (res/ok {:telephone-service {:payment-data "101042100580 \t7.49\t 00000000000000\t000010011719900\tP OJEDA MORENO WASHINGTON A\t2013-07-31\t2011\10",
@@ -379,7 +383,8 @@
      ["/accounts" {:get [:accounts accounts]}]
      ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
      ["/telephone-services" {:get [:telephone-services telephone-services]}
-      ["/:number" {:get [:telephone-detail telephone-detail]}]]
+      ["/:number" {:get [:telephone-detail telephone-detail]}
+       ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
