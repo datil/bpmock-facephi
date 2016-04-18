@@ -401,6 +401,10 @@
                             :customer-name "GARCES DEL POZO., ELENA E. ",
                             :account-number "1131845"}}))
 
+(defn energy-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -422,7 +426,8 @@
       ["/:number" {:get [:telephone-detail telephone-detail]}
        ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
      ["/energy-services" {:get [:energy-services energy-services]}
-      ["/:number" {:get [:energy-detail energy-detail]}]]
+      ["/:number" {:get [:energy-detail energy-detail]}
+       ["/credit-card-payment" {:post [:energy-card-payment energy-card-payment]}]]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
