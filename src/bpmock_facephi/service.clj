@@ -434,6 +434,10 @@
                            :amount "0.00",
                            :customer-name "MACIAS BRIONES TANIA FABIOLA"}}))
 
+(defn water-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -458,7 +462,8 @@
       ["/:number" {:get [:energy-detail energy-detail]}
        ["/credit-card-payment" {:post [:energy-card-payment energy-card-payment]}]]]
      ["/water-services" {:get [:water-services water-services]}
-      ["/:number" {:get [:water-detail water-detail]}]]
+      ["/:number" {:get [:water-detail water-detail]}
+       ["/credit-card-payment" {:post [:water-card-payment water-card-payment]}]]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
