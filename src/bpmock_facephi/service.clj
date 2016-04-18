@@ -165,15 +165,15 @@
                                   :description "iPhone"
                                   :created "2015-10-13T15:11:11Z"}]})
     "raviles1964" (res/created
-                      {:username "raviles1964"
-                       :created "2015-10-13T15:11:11Z"
-                       :last_updated "2015-10-13T15:11:11Z"
-                       :is_active 1
-                       :identification "0914617584"
-                       :devices [{:type "smartphone"
-                                  :fingerprint "ABCDE"
-                                  :description "iPhone"
-                                  :created "2015-10-13T15:11:11Z"}]})
+                   {:username "raviles1964"
+                    :created "2015-10-13T15:11:11Z"
+                    :last_updated "2015-10-13T15:11:11Z"
+                    :is_active 1
+                    :identification "0914617584"
+                    :devices [{:type "smartphone"
+                               :fingerprint "ABCDE"
+                               :description "iPhone"
+                               :created "2015-10-13T15:11:11Z"}]})
     "dschuldt" (res/bad-request
                 {:message "El usuario ya está registrado."
                  :code "bad_request"})
@@ -333,6 +333,110 @@
             :bpapp-session-token "21f75920-6aa3-11e5-8825"
             :customer-name "JIMENEZ PITA MANUEL"}}))
 
+(defn telephone-services
+  [request]
+  (res/ok {:telephone-services [{:max-amount " 4,999.00",
+                                 :company-id "101",
+                                 :customer-name "ORALIA CLEMENTINA BRIONES T",
+                                 :description "042100580 C.N.T. ",
+                                 :telephone-number "042100580",
+                                 :type "03",
+                                 :id "3",
+                                 :supports-credit-card true,
+                                 :commision "0.35"},
+                                {:max-amount " 4,999.00",
+                                 :company-id "102",
+                                 :customer-name "ORALIA CLEMENTINA BRIONES T",
+                                 :description "042100580 Palito ",
+                                 :telephone-number "042100581",
+                                 :type "03",
+                                 :id "4",
+                                 :supports-credit-card false,
+                                 :commision ""}]}))
+
+(defn telephone-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
+
+(defn credit-card-payment-types
+  [request]
+  (res/ok {:types ["Rotativo"
+                   "Diferido"]
+           :installments [0 3 6 9 12]}))
+
+(defn telephone-detail
+  [request]
+  (res/ok {:telephone-service {:payment-data "101042100580 \t7.49\t 00000000000000\t000010011719900\tP OJEDA MORENO WASHINGTON A\t2013-07-31\t2011\10",
+                               :amount "7.49",
+                               :date "2011/10",
+                               :customer-name "ORALIA CLEMENTINA BRIONES T",
+                               :telephone-number "042100580"}}))
+
+(defn energy-services
+  [request]
+  (res/ok {:energy-services [{:max-amount " 4,999.00",
+                              :company-id "201",
+                              :customer-name "TANIA MACIAS BRIONES",
+                              :description "1131845 ELECTRICA DE GUAYAQU",
+                              :account-number "1131845",
+                              :type "03",
+                              :id "9",
+                              :supports-credit-card true,
+                              :commision "0.35"},
+                             {:max-amount " 4,999.00",
+                              :company-id "201",
+                              :customer-name "HELEN MACIAS",
+                              :description "720986 ELECTRICA DE GUAYAQU",
+                              :account-number "720986",
+                              :type "03",
+                              :id "10",
+                              :supports-credit-card false,
+                              :commision ""}]}))
+
+(defn energy-detail
+  [request]
+  (res/ok {:energy-service {:payment-data "R0000915781355\tPUB\tEEE \tLU\tDN\tUSD\t10\t20130731\t00000000\t0100\tGARCES DEL POZO., ELENA E. \tEC\t \t0000000\t0000000\t1131845\t \t201001132010013100000000200053034089\t38.47\t0\t0\t0\t0\t\t\t201",
+                            :amount "10.00",
+                            :date "2010-01-13",
+                            :customer-name "GARCES DEL POZO., ELENA E. ",
+                            :account-number "1131845"}}))
+
+(defn energy-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
+
+(defn water-services
+  [request]
+  (res/ok {:water-services [{:max-amount " 4,999.00",
+                             :company-id "909",
+                             :customer-name "TANIA MACIAS",
+                             :description "1347929 INTERAGUA ",
+                             :account-number "1347929",
+                             :type "03",
+                             :id "41",
+                             :supports-credit-card true,
+                             :commision "0.35"},
+                            {:max-amount " 4,999.00",
+                             :company-id "909",
+                             :customer-name "HELEN MACIAS",
+                             :description "8958808 INTERAGUA ",
+                             :account-number "8958808",
+                             :type "03",
+                             :id "50",
+                             :supports-credit-card false,
+                             :commision ""}]}))
+
+(defn water-detail
+  [request]
+  (res/ok {:water-service {:payment-data "\tEMP\tINTERAGUA\tAU\tDN\tUSD\t0\t20130611\t20130731\t0\tMACIAS BRIONES TANIA FABIOLA\tEC\t01\t0000000\t0000000\t1347929\tI\t0919137141\t0\t0\t0\t0\t0\t\t\t0909",
+                           :reference-number "0919137141",
+                           :account-number "1347929",
+                           :amount "0.00",
+                           :customer-name "MACIAS BRIONES TANIA FABIOLA"}}))
+
+(defn water-card-payment
+  [request]
+  (res/ok {:payment "OK"}))
 
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
@@ -350,6 +454,16 @@
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/accounts" {:get [:accounts accounts]}]
      ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
+     ["/credit-card-payment-types" {:get [:credit-card-payment-types credit-card-payment-types]}]
+     ["/telephone-services" {:get [:telephone-services telephone-services]}
+      ["/:number" {:get [:telephone-detail telephone-detail]}
+       ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
+     ["/energy-services" {:get [:energy-services energy-services]}
+      ["/:number" {:get [:energy-detail energy-detail]}
+       ["/credit-card-payment" {:post [:energy-card-payment energy-card-payment]}]]]
+     ["/water-services" {:get [:water-services water-services]}
+      ["/:number" {:get [:water-detail water-detail]}
+       ["/credit-card-payment" {:post [:water-card-payment water-card-payment]}]]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
