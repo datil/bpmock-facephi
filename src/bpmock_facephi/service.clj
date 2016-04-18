@@ -354,6 +354,13 @@
                                  :supports-credit-card false,
                                  :commision ""}]}))
 
+(defn telephone-detail
+  [request]
+  (res/ok {:telephone-service {:payment-data "101042100580 \t7.49\t 00000000000000\t000010011719900\tP OJEDA MORENO WASHINGTON A\t2013-07-31\t2011\10",
+                               :amount "7.49",
+                               :date "2011/10",
+                               :customer-name "ORALIA CLEMENTINA BRIONES T",
+                               :telephone-number "042100580"}}))
 
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
@@ -371,7 +378,8 @@
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/accounts" {:get [:accounts accounts]}]
      ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
-     ["/telephone-services" {:get [:telephone-services telephone-services]}]
+     ["/telephone-services" {:get [:telephone-services telephone-services]}
+      ["/:number" {:get [:telephone-detail telephone-detail]}]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
