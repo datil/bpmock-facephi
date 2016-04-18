@@ -358,6 +358,12 @@
   [request]
   (res/ok {:payment "OK"}))
 
+(defn credit-card-payment-types
+  [request]
+  (res/ok {:types ["Rotativo"
+                   "Diferido"]
+           :installments [0 3 6 9 12]}))
+
 (defn telephone-detail
   [request]
   (res/ok {:telephone-service {:payment-data "101042100580 \t7.49\t 00000000000000\t000010011719900\tP OJEDA MORENO WASHINGTON A\t2013-07-31\t2011\10",
@@ -382,6 +388,7 @@
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/accounts" {:get [:accounts accounts]}]
      ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
+     ["/credit-card-payment-types" {:get [:credit-card-payment-types credit-card-payment-types]}]
      ["/telephone-services" {:get [:telephone-services telephone-services]}
       ["/:number" {:get [:telephone-detail telephone-detail]}
        ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
