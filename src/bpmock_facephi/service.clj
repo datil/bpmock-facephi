@@ -393,6 +393,14 @@
                               :supports-credit-card false,
                               :commision ""}]}))
 
+(defn energy-detail
+  [request]
+  (res/ok {:energy-service {:payment-data "R0000915781355\tPUB\tEEE \tLU\tDN\tUSD\t10\t20130731\t00000000\t0100\tGARCES DEL POZO., ELENA E. \tEC\t \t0000000\t0000000\t1131845\t \t201001132010013100000000200053034089\t38.47\t0\t0\t0\t0\t\t\t201",
+                            :amount "10.00",
+                            :date "2010-01-13",
+                            :customer-name "GARCES DEL POZO., ELENA E. ",
+                            :account-number "1131845"}}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -413,7 +421,8 @@
      ["/telephone-services" {:get [:telephone-services telephone-services]}
       ["/:number" {:get [:telephone-detail telephone-detail]}
        ["/credit-card-payment" {:post [:telephone-card-payment telephone-card-payment]}]]]
-     ["/energy-services" {:get [:energy-services energy-services]}]
+     ["/energy-services" {:get [:energy-services energy-services]}
+      ["/:number" {:get [:energy-detail energy-detail]}]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
