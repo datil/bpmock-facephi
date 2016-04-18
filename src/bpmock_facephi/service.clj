@@ -405,6 +405,27 @@
   [request]
   (res/ok {:payment "OK"}))
 
+(defn water-services
+  [request]
+  (res/ok {:water-services [{:max-amount " 4,999.00",
+                             :company-id "909",
+                             :customer-name "TANIA MACIAS",
+                             :description "1347929 INTERAGUA ",
+                             :account-number "1347929",
+                             :type "03",
+                             :id "41",
+                             :supports-credit-card true,
+                             :commision "0.35"},
+                            {:max-amount " 4,999.00",
+                             :company-id "909",
+                             :customer-name "HELEN MACIAS",
+                             :description "8958808 INTERAGUA ",
+                             :account-number "8958808",
+                             :type "03",
+                             :id "50",
+                             :supports-credit-card false,
+                             :commision ""}]}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -428,6 +449,7 @@
      ["/energy-services" {:get [:energy-services energy-services]}
       ["/:number" {:get [:energy-detail energy-detail]}
        ["/credit-card-payment" {:post [:energy-card-payment energy-card-payment]}]]]
+     ["/water-services" {:get [:water-services water-services]}]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
