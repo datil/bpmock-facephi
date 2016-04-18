@@ -426,6 +426,14 @@
                              :supports-credit-card false,
                              :commision ""}]}))
 
+(defn water-detail
+  [request]
+  (res/ok {:water-service {:payment-data "\tEMP\tINTERAGUA\tAU\tDN\tUSD\t0\t20130611\t20130731\t0\tMACIAS BRIONES TANIA FABIOLA\tEC\t01\t0000000\t0000000\t1347929\tI\t0919137141\t0\t0\t0\t0\t0\t\t\t0909",
+                           :reference-number "0919137141",
+                           :account-number "1347929",
+                           :amount "0.00",
+                           :customer-name "MACIAS BRIONES TANIA FABIOLA"}}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -449,7 +457,8 @@
      ["/energy-services" {:get [:energy-services energy-services]}
       ["/:number" {:get [:energy-detail energy-detail]}
        ["/credit-card-payment" {:post [:energy-card-payment energy-card-payment]}]]]
-     ["/water-services" {:get [:water-services water-services]}]
+     ["/water-services" {:get [:water-services water-services]}
+      ["/:number" {:get [:water-detail water-detail]}]]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
