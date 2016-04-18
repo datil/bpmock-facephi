@@ -165,15 +165,15 @@
                                   :description "iPhone"
                                   :created "2015-10-13T15:11:11Z"}]})
     "raviles1964" (res/created
-                      {:username "raviles1964"
-                       :created "2015-10-13T15:11:11Z"
-                       :last_updated "2015-10-13T15:11:11Z"
-                       :is_active 1
-                       :identification "0914617584"
-                       :devices [{:type "smartphone"
-                                  :fingerprint "ABCDE"
-                                  :description "iPhone"
-                                  :created "2015-10-13T15:11:11Z"}]})
+                   {:username "raviles1964"
+                    :created "2015-10-13T15:11:11Z"
+                    :last_updated "2015-10-13T15:11:11Z"
+                    :is_active 1
+                    :identification "0914617584"
+                    :devices [{:type "smartphone"
+                               :fingerprint "ABCDE"
+                               :description "iPhone"
+                               :created "2015-10-13T15:11:11Z"}]})
     "dschuldt" (res/bad-request
                 {:message "El usuario ya está registrado."
                  :code "bad_request"})
@@ -333,6 +333,27 @@
             :bpapp-session-token "21f75920-6aa3-11e5-8825"
             :customer-name "JIMENEZ PITA MANUEL"}}))
 
+(defn telephone-services
+  [request]
+  (res/ok {:telephone-services [{:max-amount " 4,999.00",
+                                 :company-id "101",
+                                 :customer-name "ORALIA CLEMENTINA BRIONES T",
+                                 :description "042100580 C.N.T. ",
+                                 :telephone-number "042100580",
+                                 :type "03",
+                                 :id "3",
+                                 :supports-credit-card true,
+                                 :commision "0.35"},
+                                {:max-amount " 4,999.00",
+                                 :company-id "102",
+                                 :customer-name "ORALIA CLEMENTINA BRIONES T",
+                                 :description "042100580 Palito ",
+                                 :telephone-number "042100581",
+                                 :type "03",
+                                 :id "4",
+                                 :supports-credit-card false,
+                                 :commision ""}]}))
+
 
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
@@ -350,6 +371,7 @@
       ["/:username/otp" {:post [:send-otp send-otp]}]]
      ["/accounts" {:get [:accounts accounts]}]
      ["/debit-accounts" {:get [:debit-accounts debit-accounts]}]
+     ["/telephone-services" {:get [:telephone-services telephone-services]}]
      ["/detectid-images" {:get [:detectid detectid]}]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
