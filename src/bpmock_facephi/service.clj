@@ -438,6 +438,20 @@
   [request]
   (res/ok {:payment "OK"}))
 
+(defn otp
+  [request]
+  (res/ok {:otp "OK"}))
+
+(defn opm-request
+  [request]
+  (res/ok {:commision "0.35"}))
+
+(defn opm-confirm
+  [request]
+  (res/ok {:code "0000"
+           :message "OPM Enviado"
+           :opm-number "1234"}))
+
 (swagger/defroutes routes
   {:info {:title "bpmock-facephi"
           :description "Simulador de servicio de autenticación biométrica anexo
@@ -465,6 +479,10 @@
       ["/:number" {:get [:water-detail water-detail]}
        ["/credit-card-payment" {:post [:water-card-payment water-card-payment]}]]]
      ["/detectid-images" {:get [:detectid detectid]}]
+     ["/otp" {:post [:otp otp]}]
+     ["/opm"
+      ["/request" {:post [:opm-request opm-request]}]
+      ["/confirm" {:post [:opm-confirm opm-confirm]}]]
      ["/facephi"
       ["/authentication" {:post [:authenticate-user authenticate-user]}]
       ["/devices/:fingerprint" {:get get-device}]
