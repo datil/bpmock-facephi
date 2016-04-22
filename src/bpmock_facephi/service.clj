@@ -296,14 +296,14 @@
                              :number "5476XXXXXXXX5193",
                              :type "cc",
                              :type-label "Tarjeta de Crédito"
-                             :customer-made "AVILES CHAVEZ ROSA",
+                             :customer-name "AVILES CHAVEZ ROSA",
                              :max-amount "4,999.00"}
                             {:description "1012345678 Cuenta Ahorros",
                              :id "1",
                              :number "1064385205",
                              :type "10",
                              :type-label "Cuenta de Ahorros"
-                             :customer-made "AVILES CHAVEZ ROSA",
+                             :customer-name "AVILES CHAVEZ ROSA",
                              :max-amount "4,999.00"}]}))
 
 (defn detectid
